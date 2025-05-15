@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AQI Prediction System</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+        
+        .navbar {
+            background-color: #1e3a5c;
+            color: white;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .navbar h1 {
+            margin: 0;
+            font-size: 28px;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+        }
+        
+        .nav-links a.active {
+            color: #4da6ff;
+        }
+        
+        .container {
+            padding: 15px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 15px;
+        }
+        
+        .card h2 {
+            color: #1e3a5c;
+            margin-top: 0;
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+        
+        .trend-card {
+            flex: 1 1 100%;
+            height: 250px; /* Reduced height */
+        }
+        
+        .info-card {
+            flex: 1 1 calc(50% - 15px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        
+        .current-aqi {
+            font-size: 65px; /* Reduced size */
+            font-weight: bold;
+            color: #e05d44;
+            margin: 5px 0;
+        }
+        
+        .prediction-aqi {
+            font-size: 65px; /* Reduced size */
+            font-weight: bold;
+            color: #f89c35;
+            margin: 5px 0;
+        }
+        
+        .aqi-status {
+            font-size: 18px;
+            margin-top: 0;
+        }
+        
+        .factors-card {
+            flex: 1 1 100%;
+        }
+        
+        .factors-container {
+            display: flex;
+            gap: 15px;
+            justify-content: space-between;
+        }
+        
+        .factor-box {
+            flex: 1;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            padding: 12px;
+        }
+        
+        .factor-box h3 {
+            margin-top: 0;
+            font-size: 18px;
+        }
+        
+        .factor-value {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 5px 0;
+        }
+        
+        .pm25 {
+            color: #e05d44;
+        }
+        
+        .temperature {
+            color: #4da6ff;
+        }
+        
+        .wind {
+            color: #4ead5b;
+        }
+        
+        .factor-change {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .up-arrow::before {
+            content: "↑ ";
+        }
+        
+        .down-arrow::before {
+            content: "↓ ";
+        }
+        
+        .suggestion-box {
+            background-color: #e6f3ff;
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+        
+        .accuracy-badge {
+            background-color: #4ead5b;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            position: absolute;
+            bottom: 15px;
+            right: 15px;
+            font-size: 14px;
+        }
+        
+        .predictors-text {
+            color: #666;
+            margin-top: 40px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <h1>AQI Prediction System</h1>
+        <div class="nav-links">
+            <a href="#">Dashboard</a>
+            <a href="#" class="active">Forecast</a>
+            <a href="#">Map</a>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="card trend-card">
+            <h2>AQI Trend and Prediction</h2>
+            <canvas id="trendChart"></canvas>
+        </div>
+        
+        <div class="card info-card">
+            <h2>Current AQI</h2>
+            <div class="current-aqi">115</div>
+            <p class="aqi-status">Unhealthy for Sensitive Groups</p>
+        </div>
+        
+        <div class="card info-card">
+            <h2>24hr Prediction</h2>
+            <div class="prediction-aqi">93</div>
+            <p class="aqi-status">Moderate</p>
+        </div>
+        
+        <div class="card factors-card">
+            <h2>Key Factors Influencing AQI</h2>
+            <div class="factors-container">
+                <div class="factor-box">
+                    <h3>PM2.5</h3>
+                    <div class="factor-value pm25">38.5 μg/m³</div>
+                    <div class="factor-change up-arrow">12% from yesterday</div>
+                </div>
+                
+                <div class="factor-box">
+                    <h3>Temperature</h3>
+                    <div class="factor-value temperature">-5.2 °C</div>
+                    <div class="factor-change down-arrow">3°C from yesterday</div>
+                </div>
+                
+                <div class="factor-box">
+                    <h3>Wind Speed</h3>
+                    <div class="factor-value wind">2.1 m/s</div>
+                    <div class="factor-change">Direction: NW</div>
+                </div>
+            </div>
+            
+            <div class="suggestion-box">
+                Suggestion: AQI is predicted to improve tomorrow due to increasing wind speed and precipitation.
+            </div>
+            
+            <p class="predictors-text">Top predictors: 1. PM2.5 2. Temperature 3. Wind Speed</p>
+            <div class="accuracy-badge">89% Accuracy</div>
+        </div>
+    </div>
+    
+    <script>
+        // Data for the chart
+        const data = {
+            labels: ['Jan 1', 'Jan 2', 'Jan 3', 'Jan 4', 'Jan 5', 'Jan 6', 'Jan 7'],
+            datasets: [
+                {
+                    label: 'Actual',
+                    data: [45, 55, 65, 110, 155, 135, 85],
+                    borderColor: '#4da6ff',
+                    backgroundColor: 'transparent',
+                    tension: 0.4,
+                    borderWidth: 2
+                },
+                {
+                    label: 'Predicted',
+                    data: [null, null, null, null, null, null, 85, 95],
+                    borderColor: '#e05d44',
+                    backgroundColor: 'transparent',
+                    borderDash: [5, 5],
+                    tension: 0.4,
+                    borderWidth: 2
+                }
+            ]
+        };
+        
+        // Chart configuration
+        const config = {
+            type: 'line',
+            data: data,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 200,
+                        title: {
+                            display: false,
+                            text: 'AQI'
+                        },
+                        ticks: {
+                            font: {
+                                size: 11
+                            }
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            font: {
+                                size: 11
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        align: 'end',
+                        labels: {
+                            boxWidth: 12,
+                            font: {
+                                size: 12
+                            }
+                        }
+                    }
+                }
+            }
+        };
+        
+        // Render chart
+        const ctx = document.getElementById('trendChart').getContext('2d');
+        const trendChart = new Chart(ctx, config);
+        
+        // Set chart height
+        document.getElementById('trendChart').style.height = '200px';
+    </script>
+</body>
+</html>
