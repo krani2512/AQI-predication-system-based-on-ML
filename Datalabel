@@ -1,0 +1,45 @@
+// Dataset for AQI Prediction System (Jan 2021 - Jan 2022)
+const data = {
+    labels: [
+        'Jan 2021', 'Feb 2021', 'Mar 2021', 'Apr 2021', 'May 2021', 'Jun 2021', 
+        'Jul 2021', 'Aug 2021', 'Sep 2021', 'Oct 2021', 'Nov 2021', 'Dec 2021', 'Jan 2022'
+    ],
+    datasets: [
+        {
+            label: 'Actual',
+            data: [78, 65, 52, 48, 42, 40, 45, 68, 85, 95, 110, 125, 85],
+            borderColor: '#4da6ff',
+            backgroundColor: 'transparent',
+            tension: 0.4,
+            borderWidth: 2
+        },
+        {
+            label: 'Predicted',
+            data: [null, null, null, null, null, null, null, null, null, null, null, null, 85, 75],
+            borderColor: '#e05d44',
+            backgroundColor: 'transparent',
+            borderDash: [5, 5],
+            tension: 0.4,
+            borderWidth: 2
+        }
+    ]
+};
+
+// Same data in CSV format for easier export:
+/*
+Month,Actual,Predicted
+Jan 2021,78,
+Feb 2021,65,
+Mar 2021,52,
+Apr 2021,48,
+May 2021,42,
+Jun 2021,40,
+Jul 2021,45,
+Aug 2021,68,
+Sep 2021,85,
+Oct 2021,95,
+Nov 2021,110,
+Dec 2021,125,
+Jan 2022,85,85
+Feb 2022,,75
+*/
