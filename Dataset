@@ -1,0 +1,18 @@
+Date labels: 'Jan 2021' through 'Jan 2022'
+Two data series:
+
+"Actual" AQI values: [45, 55, 65, 110, 155, 135, 85]
+"Predicted" AQI values: [null, null, null, null, null, null, 85, 95]
+(Note that the prediction starts with Jan 7's actual value and extends to one additional day)
+
+
+
+The dashboard also displays additional data that isn't part of the chart:
+
+Current AQI: 115 (Unhealthy for Sensitive Groups)
+24hr Prediction: 93 (Moderate)
+Key factors:
+
+PM2.5: 38.5 μg/m³ (12% increase from yesterday)
+Temperature: -5.2 °C (3°C decrease from yesterday)
+Wind Speed: 2.1 m/s (Direction: NW)
